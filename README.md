@@ -26,3 +26,32 @@ $ source venv/bin/activate
 (venv) $ pip install -r requirements.txt
 (venv) $ python cli.py <INPUT_FILE> <OUTPUT_FILE>
 ```
+
+## Notes
+
+Supported output format is HTML only for now, but you can still access to the table
+structure through `Table` object. It has `list` of rows and each row consists
+of `list` of `TableCell`s.
+
+So, the entire structure looks like:
+
+```
+<class Table>
+    .row_cnt = XX
+    .col_cnt = XX
+    .rows = [
+        [<class TableCell>, <class TableCell>, ...],
+        [<class TableCell>, <class TableCell>, ...],
+        ...
+    ]
+
+<class TableCell>
+    .lines = ['Line 1', 'Line 2', 'Line 3', ...]
+    .row = XX
+    .col = XX
+    .row_span = XX
+    .col_span = XX
+```
+
+Note that each row can have different count of cell because of the `row_span`s
+and `col_span`s.
