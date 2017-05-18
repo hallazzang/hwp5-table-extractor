@@ -56,5 +56,5 @@ So, the entire structure looks like:
     .col_span = XX
 ```
 
-Note that each row can have different count of cell because of the `row_span`s
+Note that each row can have different numbers of cell because of `row_span`s
 and `col_span`s.
