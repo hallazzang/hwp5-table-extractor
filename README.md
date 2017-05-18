@@ -7,6 +7,9 @@ It is developed in Python 3.6.1.
 
 ![screenshot](screenshot.png)
 
+Left: Rendered HTML
+Right: Hwp Viewer for Mac.
+
 ## Dependencies
 
 - olefile
