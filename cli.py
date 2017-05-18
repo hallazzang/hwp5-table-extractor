@@ -1,5 +1,3 @@
-import codecs
-
 import click
 from jinja2 import Template
 
