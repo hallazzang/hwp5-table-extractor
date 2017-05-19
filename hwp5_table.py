@@ -175,6 +175,10 @@ def get_paragraph_text(record):
             else:
                 control_char = ord(searched.group(1))
                 control_char_size = control_char_table[control_char][1].size
+
+                if control_char == 0x0a:
+                    text += '\n'
+
                 idx = control_char_pos + control_char_size * 2
         else:
             text += record.payload[idx:].decode('utf-16')
@@ -235,7 +239,7 @@ def make_tables(record_tree_root):
             for sibling in record.get_next_siblings(paragraph_count):
                 for child in sibling.children:
                     if child.tag_name == 'HWPTAG_PARA_TEXT':
-                        lines.append(get_paragraph_text(child).strip())
+                        lines.extend(get_paragraph_text(child).strip().splitlines())
                         break
 
             ctx['tables'][ctx['current_table_idx']].rows[row].append(
