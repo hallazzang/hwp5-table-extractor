@@ -60,20 +60,24 @@ class Record(object):
     def get_text(self):
         regex = re.compile(rb'([\x00-\x1f])\x00')
 
-        length = len(self.payload)
         text = ''
 
-        idx = 0
-        while idx < length:
-            searched = regex.search(self.payload, idx)
-            if searched:
-                control_char_pos = searched.start()
+        cursor_idx = 0
+        search_idx = 0
 
-                if control_char_pos & 1:
-                    idx = control_char_pos + 1
-                elif control_char_pos > idx:
-                    text += self.payload[idx:control_char_pos].decode('utf-16')
-                    idx = control_char_pos
+        while cursor_idx < len(self.payload):
+            if search_idx < cursor_idx:
+                search_idx = cursor_idx
+
+            searched = regex.search(self.payload, search_idx)
+            if searched:
+                pos = searched.start()
+
+                if pos & 1:
+                    search_idx = pos + 1
+                elif pos > cursor_idx:
+                    text += self.payload[cursor_idx:pos].decode('utf-16')
+                    cursor_idx = pos
                 else:
                     control_char = ord(searched.group(1))
                     control_char_size = control_char_table[control_char][1].size
@@ -81,9 +85,9 @@ class Record(object):
                     if control_char == 0x0a:
                         text += '\n'
 
-                    idx = control_char_pos + control_char_size * 2
+                    cursor_idx = pos + control_char_size * 2
             else:
-                text += self.payload[idx:].decode('utf-16')
+                text += self.payload[search_idx:].decode('utf-16')
                 break
 
         return text
