@@ -254,6 +254,28 @@ def make_tables(record_tree_root):
 
     return ctx['tables']
 
+class ZlibDecompressStream(object):
+    def __init__(self, stream, wbits=15, chunk_size=4096):
+        self._stream = stream
+        self._decompressor = zlib.decompressobj(wbits)
+        self.chunk_size = chunk_size
+        self.buffer = b''
+
+    def read(self, size):
+        while len(self.buffer) < size and not self._decompressor.eof:
+            chunk = self._decompressor.unconsumed_tail
+            if not chunk:
+                chunk = self._stream.read(self.chunk_size)
+                if not chunk:
+                    break
+
+            self.buffer += self._decompressor.decompress(chunk, self.chunk_size)
+
+        result = self.buffer[:size]
+        self.buffer = self.buffer[size:]
+
+        return result
+
 class HwpFile(object):
     def __init__(self, file):
         self.ole = olefile.OleFileIO(file)
@@ -270,11 +292,9 @@ class HwpFile(object):
 
     def get_record_tree(self, section_idx):
         with self.ole.openstream('BodyText/Section%d' % section_idx) as stream:
-            content = stream.read()
             if self.compressed:
-                content = zlib.decompress(content, -15)
+                stream = ZlibDecompressStream(stream, -15)
 
-        with BytesIO(content) as stream:
             record_tree_root = Record.build_tree_from_stream(stream)
 
         return record_tree_root
