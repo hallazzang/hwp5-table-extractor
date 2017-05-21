@@ -1,7 +1,7 @@
 import click
 from jinja2 import Template
 
-from hwp5_table import HwpFile, make_tables
+from hwp5_table import HwpFile
 
 @click.command()
 @click.argument('input', type=click.File('rb'))
