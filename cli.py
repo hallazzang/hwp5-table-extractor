@@ -12,7 +12,7 @@ def cli(input, output):
     tables = []
     section_idx = 0
     while hwp.ole.exists('BodyText/Section%d' % section_idx):
-        tables.extend(make_tables(hwp.get_record_tree(section_idx)))
+        tables.extend(hwp.get_tables(section_idx))
         section_idx += 1
 
     # Render to html using Jinja2 template engine
