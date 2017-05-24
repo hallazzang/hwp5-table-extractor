@@ -3,6 +3,10 @@
 hwp5-table-extractor is a tool for extracting tables from Hwp5 file.
 It is developed in Python 3.6.1.
 
+## Wiki
+
+Visit project's [Wiki page](https://github.com/hallazzang/hwp5-table-extractor/wiki) and gather informations about how Hwp5 file is constructed.
+
 ## Screenshot
 
 ![screenshot](screenshot.png)
